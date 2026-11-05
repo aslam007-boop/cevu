@@ -1,4 +1,4 @@
-import boutique from "@/assets/cevu-boutique.png.asset.json";
+import boutique from "@/assets/cevu-boutique.png";
 
 export default function Glasses3D() {
   return (
