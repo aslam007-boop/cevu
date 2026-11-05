@@ -357,11 +357,11 @@ function Reviews() {
 
 function Booking() {
   const [v, setV] = useState({ name: "", phone: "", store: "1", date: "", msg: "" });
-  const [err, setErr] = useState<Record<string, string>>({});
+  const [err, setErr] = useState<Partial<Record<"name" | "phone" | "date", string>>>({});
   const [ok, setOk] = useState(false);
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const er: Record<string, string> = {};
+    const er: Partial<Record<"name" | "phone" | "date", string>> = {};
     if (v.name.trim().length < 2) er.name = "Veuillez indiquer votre nom.";
     if (!/^[0-9 +]{8,15}$/.test(v.phone.trim())) er.phone = "Numéro de téléphone invalide.";
     if (!v.date) er.date = "Choisissez une date.";
@@ -373,7 +373,7 @@ function Booking() {
   const store = v.store === "1" ? "Magasin 1 (centre ville)" : "Magasin 2 (Route Lafran)";
   const waText = `Bonjour Cévu Optique, je souhaite un examen de vue.\nNom: ${v.name}\nTél: ${v.phone}\n${store}\nDate: ${v.date}\n${v.msg}`;
   const field = "w-full rounded-xl border bg-background px-4 py-3.5 outline-none transition focus:border-accent focus:ring-2 focus:ring-ring/30";
-  const E = ({ k }: { k: string }) => (err[k] ? <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="mt-1.5 text-xs text-destructive">{err[k]}</motion.p> : null);
+  const E = ({ k }: { k: "name" | "phone" | "date" }) => (err[k] ? <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="mt-1.5 text-xs text-destructive">{err[k]}</motion.p> : null);
   return (
     <section id="rdv" className="bg-primary py-28 text-primary-foreground">
       <Reveal className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-2">
