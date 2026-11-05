@@ -51,6 +51,9 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-gold: var(--gold);
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -62,26 +65,29 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --radius: 1rem;
+  --background: oklch(0.975 0.014 85);
+  --foreground: oklch(0.22 0.005 100);
+  --card: oklch(0.99 0.008 85);
+  --card-foreground: oklch(0.22 0.005 100);
+  --popover: oklch(0.99 0.008 85);
+  --popover-foreground: oklch(0.22 0.005 100);
+  --primary: oklch(0.22 0.005 100);
+  --primary-foreground: oklch(0.975 0.014 85);
+  --secondary: oklch(0.93 0.03 82);
+  --secondary-foreground: oklch(0.22 0.005 100);
+  --muted: oklch(0.94 0.02 84);
+  --muted-foreground: oklch(0.48 0.02 80);
+  --accent: oklch(0.66 0.17 128);
+  --accent-foreground: oklch(0.99 0.01 85);
+  --gold: oklch(0.72 0.11 75);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.88 0.025 82);
+  --input: oklch(0.88 0.025 82);
+  --ring: oklch(0.66 0.17 128);
+  --gradient-warm: radial-gradient(ellipse at 70% 20%, oklch(0.96 0.05 85) 0%, oklch(0.975 0.014 85) 50%, oklch(0.93 0.035 78) 100%);
+  --shadow-soft: 0 30px 60px -30px oklch(0.4 0.05 70 / 0.35);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -142,3 +148,41 @@
     color: var(--color-foreground);
   }
 }
+
+@layer base {
+  html { scroll-behavior: auto; }
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  h1,h2,h3 { font-family: var(--font-serif); font-weight: 500; letter-spacing: -0.02em; }
+}
+@utility bg-warm { background: var(--gradient-warm); }
+@utility shadow-soft { box-shadow: var(--shadow-soft); }
+@utility glass {
+  background: color-mix(in oklab, var(--card) 60%, transparent);
+  backdrop-filter: blur(18px);
+  border: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+@utility shimmer {
+  background: linear-gradient(110deg, var(--foreground) 40%, var(--gold) 50%, var(--foreground) 60%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+@utility border-glow {
+  position: relative;
+  &::before {
+    content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+    background: conic-gradient(from var(--a), transparent 60%, var(--accent), var(--gold), transparent 90%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: spin-a 5s linear infinite; opacity: 0; transition: opacity .4s;
+  }
+  &:hover::before { opacity: 1; }
+}
+@property --a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes spin-a { to { --a: 360deg; } }
+@keyframes shimmer { to { background-position: -250% 0; } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@utility animate-marquee { animation: marquee 35s linear infinite; }
+@keyframes beam { 0% { transform: translateX(-100%);} 100% { transform: translateX(400%);} }
+@utility animate-beam { animation: beam 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { *,*::before { animation: none !important; transition: none !important; } }
