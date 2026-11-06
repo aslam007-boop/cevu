@@ -190,14 +190,22 @@ function Title({ k, t }: { k: string; t: React.ReactNode }) {
   );
 }
 
-function Categories() {
+function Categories({ onPick }: { onPick: (c: Cat) => void }) {
   return (
     <section id="collections" className="py-28">
       <Reveal className="mx-auto max-w-7xl px-6">
         <Title k="Collections" t={<>Une vision, <em>trois univers</em></>} />
         <div className="grid gap-6 md:grid-cols-3">
-          {CATS.map((c) => (
+          {CATS.map((c) => {
+            const hasProducts = PRODUCTS.some((p) => p.cat === c.id);
+            return (
             <div data-r key={c.id}>
+              <a
+                href={hasProducts ? "#produits" : undefined}
+                onClick={hasProducts ? () => onPick(c.id) : undefined}
+                aria-label={hasProducts ? `Voir les produits : ${c.title}` : undefined}
+                className={`block ${hasProducts ? "" : "cursor-default"}`}
+              >
               <Tilt className="border-glow group rounded-3xl bg-card p-3 shadow-soft">
                 <div className="overflow-hidden rounded-2xl">
                   <img src={c.img} alt={c.title} loading="lazy" width={816} height={816} className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-110" />
@@ -207,16 +215,17 @@ function Categories() {
                   <p className="mt-2 text-sm text-muted-foreground">{c.desc}</p>
                 </div>
               </Tilt>
+              </a>
             </div>
-          ))}
+            );
+          })}
         </div>
       </Reveal>
     </section>
   );
 }
 
-function Products() {
-  const [f, setF] = useState<Cat | "all">("all");
+function Products({ f, setF }: { f: Cat | "all"; setF: (v: Cat | "all") => void }) {
   const [parent] = useAutoAnimate();
   const list = PRODUCTS.filter((p) => f === "all" || p.cat === f);
   const tabs: [Cat | "all", string][] = [["all", "Tout"], ["vue", "Vue"], ["solaire", "Solaire"], ["bleue", "Anti-bleue"]];
@@ -468,6 +477,7 @@ function Footer() {
 
 export default function Site() {
   const [ready, setReady] = useState(false);
+  const [filter, setFilter] = useState<Cat | "all">("all");
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -498,8 +508,8 @@ export default function Site() {
       <Nav />
       <main>
         <Hero ready={ready} />
-        <Categories />
-        <Products />
+        <Categories onPick={setFilter} />
+        <Products f={filter} setF={setFilter} />
         <Marquee />
         <Why />
         <Reviews />
