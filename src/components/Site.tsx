@@ -7,7 +7,7 @@ import SplitType from "split-type";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Eye, Gem, ShieldCheck, Star, Phone, MapPin, Clock, Instagram, Facebook, Mail, MessageCircle, Check } from "lucide-react";
 import logo from "@/assets/cevu-logo.png";
-import boutique from "@/assets/boutique.png";
+import boutique from "@/assets/cevu-hero.png.asset.json";
 import pSol from "@/assets/p-solaire.jpg";
 import pVue from "@/assets/p-vue.jpg";
 import pBleue from "@/assets/p-bleue.jpg";
@@ -277,7 +277,7 @@ function Why() {
           ))}
         </div>
         <div data-r className="mt-16 overflow-hidden rounded-3xl">
-          <img src={boutique} alt="Boutique Cévu Optique, mur de lunettes Gucci" loading="lazy" className="w-full object-cover" />
+          <img src={boutique.url} alt="Boutique Cévu Optique, mur de lunettes Gucci" loading="lazy" className="w-full object-cover" />
         </div>
       </Reveal>
     </section>
