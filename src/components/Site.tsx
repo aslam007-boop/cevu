@@ -18,18 +18,25 @@ const PHONE2 = "74 619 650";
 const WA = "https://wa.me/21674221618";
 
 type Cat = "vue" | "solaire" | "bleue" | "lentilles";
+type Gen = "homme" | "femme";
+type ProductGen = Gen | "mixte";
+const GENRES: { id: Gen; title: string; desc: string }[] = [
+  { id: "homme", title: "Homme", desc: "Montures et solaires pour lui." },
+  { id: "femme", title: "Femme", desc: "Montures et solaires pour elle." },
+];
 const CATS: { id: Cat; title: string; desc: string; img: string }[] = [
   { id: "vue", title: "Lunettes de Vue", desc: "Montures d'exception, verres sur mesure.", img: pVue },
   { id: "solaire", title: "Lunettes Solaires", desc: "Éditions limitées & icônes de la mode.", img: pSol },
   { id: "lentilles", title: "Lentilles de contact", desc: "Confort et netteté, pour chaque regard.", img: pLent },
 ];
+// genre: "homme" | "femme" | "mixte" (mixte = visible dans les deux collections)
 const PRODUCTS = [
-  { name: "Gucci GG1325S Édition Limitée", brand: "Gucci", cat: "solaire" as Cat, img: pSol, price: "890 DT" },
-  { name: "Persol Gold Round 2493", brand: "Persol", cat: "vue" as Cat, img: pVue, price: "620 DT" },
-  { name: "Ray-Ban Blue Clubmaster", brand: "Ray-Ban", cat: "bleue" as Cat, img: pBleue, price: "410 DT" },
-  { name: "Prada Symbole Écaille", brand: "Prada", cat: "solaire" as Cat, img: pSol, price: "760 DT" },
-  { name: "Tom Ford FT5401 Optique", brand: "Tom Ford", cat: "vue" as Cat, img: pVue, price: "680 DT" },
-  { name: "Cévu Screen Shield", brand: "Cévu", cat: "bleue" as Cat, img: pBleue, price: "220 DT" },
+  { name: "Gucci GG1325S Édition Limitée", brand: "Gucci", cat: "solaire" as Cat, genre: "mixte" as ProductGen, img: pSol, price: "890 DT" },
+  { name: "Persol Gold Round 2493", brand: "Persol", cat: "vue" as Cat, genre: "mixte" as ProductGen, img: pVue, price: "620 DT" },
+  { name: "Ray-Ban Blue Clubmaster", brand: "Ray-Ban", cat: "bleue" as Cat, genre: "mixte" as ProductGen, img: pBleue, price: "410 DT" },
+  { name: "Prada Symbole Écaille", brand: "Prada", cat: "solaire" as Cat, genre: "femme" as ProductGen, img: pSol, price: "760 DT" },
+  { name: "Tom Ford FT5401 Optique", brand: "Tom Ford", cat: "vue" as Cat, genre: "homme" as ProductGen, img: pVue, price: "680 DT" },
+  { name: "Cévu Screen Shield", brand: "Cévu", cat: "bleue" as Cat, genre: "mixte" as ProductGen, img: pBleue, price: "220 DT" },
 ];
 const BRANDS = ["GUCCI", "Ray-Ban", "PERSOL", "PRADA", "TOM FORD", "DIOR", "Carrera", "OAKLEY", "VERSACE", "Police"];
 const REVIEWS = [
@@ -190,51 +197,92 @@ function Title({ k, t }: { k: string; t: React.ReactNode }) {
   );
 }
 
-function Categories({ onPick }: { onPick: (c: Cat) => void }) {
+function Categories({ genre, setGenre, onPick }: { genre: Gen | null; setGenre: (g: Gen | null) => void; onPick: (c: Cat) => void }) {
   return (
     <section id="collections" className="py-28">
       <Reveal className="mx-auto max-w-7xl px-6">
         <Title k="Collections" t={<>Une vision, <em>trois univers</em></>} />
-        <div className="grid gap-6 md:grid-cols-3">
-          {CATS.map((c) => (
-            <div data-r key={c.id}>
-              <a
-                href="#produits"
-                onClick={() => onPick(c.id)}
-                aria-label={`Voir les produits : ${c.title}`}
-                className="block"
-              >
-              <Tilt className="border-glow group rounded-3xl bg-card p-3 shadow-soft">
-                <div className="overflow-hidden rounded-2xl">
-                  <img src={c.img} alt={c.title} loading="lazy" width={816} height={816} className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-110" />
+        <div data-r>
+          <AnimatePresence mode="wait">
+            {!genre ? (
+              <motion.div key="genre" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.35 }}>
+                <p className="mb-6 text-xs uppercase tracking-[0.3em] text-muted-foreground">Pour qui cherchez-vous ?</p>
+                <div className="grid gap-6 md:grid-cols-2">
+                  {GENRES.map((g) => (
+                    <button
+                      key={g.id}
+                      type="button"
+                      onClick={() => setGenre(g.id)}
+                      className="border-glow group flex min-h-[280px] flex-col justify-between rounded-3xl bg-card p-10 text-left shadow-soft transition hover:-translate-y-1"
+                    >
+                      <span className="text-xs uppercase tracking-[0.35em] text-accent">Collection</span>
+                      <span>
+                        <span className="block font-serif text-6xl md:text-7xl">{g.title}</span>
+                        <span className="mt-3 block text-muted-foreground">{g.desc}</span>
+                      </span>
+                      <span className="mt-8 text-sm transition-transform group-hover:translate-x-1">Découvrir →</span>
+                    </button>
+                  ))}
                 </div>
-                <div className="p-5">
-                  <h3 className="text-3xl">{c.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{c.desc}</p>
+              </motion.div>
+            ) : (
+              <motion.div key={genre} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.35 }}>
+                <div className="mb-8 flex items-center gap-4">
+                  <span className="rounded-full bg-primary px-5 py-2 text-sm capitalize text-primary-foreground">{genre}</span>
+                  <button type="button" onClick={() => setGenre(null)} className="text-sm text-muted-foreground underline-offset-4 hover:text-accent hover:underline">Changer</button>
                 </div>
-              </Tilt>
-              </a>
-            </div>
-          ))}
+                <div className="grid gap-6 md:grid-cols-3">
+                  {CATS.map((c) => (
+                    <div key={c.id}>
+                      <a
+                        href="#produits"
+                        onClick={() => onPick(c.id)}
+                        aria-label={`Voir les produits : ${c.title} (${genre})`}
+                        className="block"
+                      >
+                        <Tilt className="border-glow group rounded-3xl bg-card p-3 shadow-soft">
+                          <div className="overflow-hidden rounded-2xl">
+                            <img src={c.img} alt={c.title} loading="lazy" width={816} height={816} className="aspect-[4/5] w-full object-cover transition duration-700 group-hover:scale-110" />
+                          </div>
+                          <div className="p-5">
+                            <h3 className="text-3xl">{c.title}</h3>
+                            <p className="mt-2 text-sm text-muted-foreground">{c.desc}</p>
+                          </div>
+                        </Tilt>
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </Reveal>
     </section>
   );
 }
 
-function Products({ f, setF }: { f: Cat | "all"; setF: (v: Cat | "all") => void }) {
+function Products({ f, setF, g, setG }: { f: Cat | "all"; setF: (v: Cat | "all") => void; g: Gen | null; setG: (v: Gen | null) => void }) {
   const [parent] = useAutoAnimate();
-  const list = PRODUCTS.filter((p) => f === "all" || p.cat === f);
+  const list = PRODUCTS.filter((p) => (f === "all" || p.cat === f) && (!g || p.genre === g || p.genre === "mixte"));
+  const genres: [Gen | null, string][] = [[null, "Tous"], ["homme", "Homme"], ["femme", "Femme"]];
   const tabs: [Cat | "all", string][] = [["all", "Tout"], ["vue", "Vue"], ["solaire", "Solaire"], ["lentilles", "Lentilles"]];
   return (
     <section id="produits" className="bg-secondary/50 py-28">
       <Reveal className="mx-auto max-w-7xl px-6">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <Title k="Sélection" t={<>Pièces <em>signatures</em></>} />
-          <div data-r className="mb-14 flex flex-wrap gap-2">
-            {tabs.map(([id, l]) => (
-              <button key={id} onClick={() => setF(id)} className={`rounded-full px-5 py-2 text-sm transition ${f === id ? "bg-primary text-primary-foreground" : "border border-border hover:border-accent"}`}>{l}</button>
-            ))}
+          <div data-r className="mb-14 flex flex-col items-start gap-3 md:items-end">
+            <div className="flex flex-wrap gap-2">
+              {genres.map(([id, l]) => (
+                <button key={l} type="button" onClick={() => setG(id)} className={`rounded-full px-5 py-2 text-sm transition ${g === id ? "bg-accent text-accent-foreground" : "border border-border hover:border-accent"}`}>{l}</button>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {tabs.map(([id, l]) => (
+                <button key={id} type="button" onClick={() => setF(id)} className={`rounded-full px-5 py-2 text-sm transition ${f === id ? "bg-primary text-primary-foreground" : "border border-border hover:border-accent"}`}>{l}</button>
+              ))}
+            </div>
           </div>
         </div>
         <div ref={parent} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -254,11 +302,17 @@ function Products({ f, setF }: { f: Cat | "all"; setF: (v: Cat | "all") => void 
             </article>
           ))}
         </div>
-        {list.length === 0 && (
+        {list.length === 0 && f === "lentilles" && (
           <div className="rounded-3xl bg-card p-10 text-center shadow-soft">
             <p className="font-serif text-3xl">Lentilles de contact</p>
             <p className="mt-3 text-muted-foreground">Contactez-nous pour connaître les références disponibles.</p>
             <a href={`${WA}?text=${encodeURIComponent("Bonjour, je souhaite des informations sur les lentilles de contact")}`} target="_blank" rel="noreferrer" className="mt-6 inline-block rounded-full bg-primary px-7 py-3.5 text-primary-foreground transition hover:bg-accent">Demander sur WhatsApp</a>
+          </div>
+        )}
+        {list.length === 0 && f !== "lentilles" && (
+          <div className="rounded-3xl bg-card p-10 text-center shadow-soft">
+            <p className="font-serif text-3xl">Aucun produit pour cette sélection</p>
+            <button type="button" onClick={() => { setF("all"); setG(null); }} className="mt-6 rounded-full bg-primary px-7 py-3.5 text-primary-foreground transition hover:bg-accent">Voir toute la sélection</button>
           </div>
         )}
       </Reveal>
@@ -482,6 +536,7 @@ function Footer() {
 export default function Site() {
   const [ready, setReady] = useState(false);
   const [filter, setFilter] = useState<Cat | "all">("all");
+  const [genre, setGenre] = useState<Gen | null>(null);
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -512,8 +567,8 @@ export default function Site() {
       <Nav />
       <main>
         <Hero ready={ready} />
-        <Categories onPick={setFilter} />
-        <Products f={filter} setF={setFilter} />
+        <Categories genre={genre} setGenre={setGenre} onPick={setFilter} />
+        <Products f={filter} setF={setFilter} g={genre} setG={setGenre} />
         <Marquee />
         <Why />
         <Reviews />
