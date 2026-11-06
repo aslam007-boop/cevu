@@ -196,15 +196,13 @@ function Categories({ onPick }: { onPick: (c: Cat) => void }) {
       <Reveal className="mx-auto max-w-7xl px-6">
         <Title k="Collections" t={<>Une vision, <em>trois univers</em></>} />
         <div className="grid gap-6 md:grid-cols-3">
-          {CATS.map((c) => {
-            const hasProducts = PRODUCTS.some((p) => p.cat === c.id);
-            return (
+          {CATS.map((c) => (
             <div data-r key={c.id}>
               <a
-                href={hasProducts ? "#produits" : undefined}
-                onClick={hasProducts ? () => onPick(c.id) : undefined}
-                aria-label={hasProducts ? `Voir les produits : ${c.title}` : undefined}
-                className={`block ${hasProducts ? "" : "cursor-default"}`}
+                href="#produits"
+                onClick={() => onPick(c.id)}
+                aria-label={`Voir les produits : ${c.title}`}
+                className="block"
               >
               <Tilt className="border-glow group rounded-3xl bg-card p-3 shadow-soft">
                 <div className="overflow-hidden rounded-2xl">
@@ -217,8 +215,7 @@ function Categories({ onPick }: { onPick: (c: Cat) => void }) {
               </Tilt>
               </a>
             </div>
-            );
-          })}
+          ))}
         </div>
       </Reveal>
     </section>
@@ -228,7 +225,7 @@ function Categories({ onPick }: { onPick: (c: Cat) => void }) {
 function Products({ f, setF }: { f: Cat | "all"; setF: (v: Cat | "all") => void }) {
   const [parent] = useAutoAnimate();
   const list = PRODUCTS.filter((p) => f === "all" || p.cat === f);
-  const tabs: [Cat | "all", string][] = [["all", "Tout"], ["vue", "Vue"], ["solaire", "Solaire"], ["bleue", "Anti-bleue"]];
+  const tabs: [Cat | "all", string][] = [["all", "Tout"], ["vue", "Vue"], ["solaire", "Solaire"], ["lentilles", "Lentilles"]];
   return (
     <section id="produits" className="bg-secondary/50 py-28">
       <Reveal className="mx-auto max-w-7xl px-6">
@@ -257,6 +254,13 @@ function Products({ f, setF }: { f: Cat | "all"; setF: (v: Cat | "all") => void 
             </article>
           ))}
         </div>
+        {list.length === 0 && (
+          <div className="rounded-3xl bg-card p-10 text-center shadow-soft">
+            <p className="font-serif text-3xl">Lentilles de contact</p>
+            <p className="mt-3 text-muted-foreground">Contactez-nous pour connaître les références disponibles.</p>
+            <a href={`${WA}?text=${encodeURIComponent("Bonjour, je souhaite des informations sur les lentilles de contact")}`} target="_blank" rel="noreferrer" className="mt-6 inline-block rounded-full bg-primary px-7 py-3.5 text-primary-foreground transition hover:bg-accent">Demander sur WhatsApp</a>
+          </div>
+        )}
       </Reveal>
     </section>
   );
