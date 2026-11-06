@@ -7,7 +7,6 @@ import SplitType from "split-type";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Eye, Gem, ShieldCheck, Star, Phone, MapPin, Clock, Instagram, Facebook, Mail, MessageCircle, Check } from "lucide-react";
 import logo from "@/assets/cevu-logo.png";
-import hero from "@/assets/cevu-hero.png.asset.json";
 import boutique from "@/assets/boutique.png";
 import pSol from "@/assets/p-solaire.jpg";
 import pVue from "@/assets/p-vue.jpg";
@@ -129,11 +128,11 @@ function Hero({ ready }: { ready: boolean }) {
     return () => st.revert();
   }, [ready]);
   return (
-    <section id="top" className="relative min-h-screen overflow-hidden bg-warm pt-28">
+    <section id="top" className="relative flex min-h-screen items-center overflow-hidden bg-warm pb-20 pt-28">
       <div className="pointer-events-none absolute -left-40 top-20 h-[500px] w-[500px] rounded-full bg-accent/20 blur-[120px]" />
       <div className="pointer-events-none absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full bg-gold/25 blur-[140px]" />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-6 lg:grid-cols-2">
-        <div>
+      <div className="relative mx-auto w-full max-w-7xl px-6">
+        <div className="max-w-4xl">
           <p className="mb-6 text-xs uppercase tracking-[0.35em] text-muted-foreground">Opticienne optométriste · Sfax</p>
           <h1 ref={h} className="text-5xl leading-[1.02] md:text-7xl [&_.char]:inline-block">
             Trouver la paire parfaite, c'est plus qu'un choix… <em className="text-accent">c'est une expérience</em>
@@ -146,9 +145,6 @@ function Hero({ ready }: { ready: boolean }) {
             <span className="flex text-gold">{[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}</span>
             5.0 sur Google · 16,7k abonnés Instagram
           </div>
-        </div>
-        <div className="h-[420px] md:h-[560px]">
-          <img src={hero.url} alt="Cévu Optique" className="h-full w-full rounded-3xl object-cover object-center" />
         </div>
       </div>
     </section>
